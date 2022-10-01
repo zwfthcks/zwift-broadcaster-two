@@ -1,0 +1,23 @@
+{
+  "name": "zwiftbroadcaster2",
+  "version": "0.0.1",
+  "description": "Broadcast Zwift playerstate via UDP",
+  "main": "index.js",
+  "scripts": {
+    "pkg": "npx pkg -t win --out-path ./build package.json",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@zwfthcks/zwift-memory-monitor": "github:zwfthcks/zwift-memory-monitor",
+    "ansi-escapes": "4.3.2",
+    "boxen": "5.1.2",
+    "find-free-udp-port": "^1.0.0",
+    "ora": "5.4.1"
+  },
+  "bin": "index.js",
+  "pkg": {
+    "scripts": [ "zmm-child.js" ]
+  }
+}
