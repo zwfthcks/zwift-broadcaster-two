@@ -27,6 +27,7 @@ const spinner = ora({
 
 // fork of child process
 const { fork } = require('node:child_process');
+const { stringify } = require('querystring');
 const controller = new AbortController();
 const { signal } = controller;
 const child = fork(path.resolve(__dirname, 'zmm-child.js'), ['playerstate'], { signal });
@@ -38,12 +39,14 @@ child.on('error', (err) => {
 child.on('message', (msg) => {
     // console.log('Got message:', msg)
     // hasMonitor = true; // we actually have an active monitor
-    // if (msg?.type == 'info') {
-    //     console.log(...msg.payload)
-    // }
-    // if (msg?.type == 'status') {
-    //     console.log(msg.payload)
-    // }
+    if (msg?.type == 'info') {
+        // console.log(...msg.payload)
+        spinner.text = JSON.stringify(...msg.payload)
+    }
+    if (msg?.type == 'status') {
+        // console.log(msg.payload)
+        spinner.text = msg.payload
+    }
     if (msg?.type == 'playerstate') {
         monitor.emit('playerstate', { ...msg.payload })
     }

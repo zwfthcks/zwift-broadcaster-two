@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "pkg": "npx pkg -t win --out-path ./build package.json",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
