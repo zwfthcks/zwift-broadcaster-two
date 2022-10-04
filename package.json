@@ -14,11 +14,13 @@
     "@zwfthcks/zwift-memory-monitor": "github:zwfthcks/zwift-memory-monitor",
     "ansi-escapes": "4.3.2",
     "boxen": "5.1.2",
-    "find-free-udp-port": "^1.0.0",
-    "ora": "5.4.1"
+    "ora": "5.4.1",
+    "pick-port": "^1.0.1"
   },
   "bin": "index.js",
   "pkg": {
-    "scripts": [ "zmm-child.js" ]
+    "scripts": [
+      "zmm-child.js"
+    ]
   }
 }

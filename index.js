@@ -2,7 +2,7 @@
 
 const THISBROADCASTER = 'power-broadcaster-port'
 
-const findUdpPort = require('find-free-udp-port');
+const pickPort = require('pick-port');
 
 const os = require('os')
 const path = require('path')
@@ -56,8 +56,9 @@ child.on('message', (msg) => {
 
 
 
-findUdpPort({ start: 6900, end: 6999, host: '127.0.0.1', type: 'udp4'}).then(({type, port, host}) => {
+pickPort({ minPort: 6900, maxPort: 6999, ip: '127.0.0.1', type: 'udp'}).then((port) => {
     
+    var host = '127.0.0.1'
     // var PORT = port;
     // var HOST_IP_ADDRESS = host;
     var MULTICAST_ADDR = '239.255.255.250';
