@@ -22,24 +22,29 @@ if (process.platform == 'win32') {
         send({ type: type, payload: data })
     })
     
-    zmm.on('status.started', () => {
+    zmm.on('status.error', (...args) => {
         // console.log('status.started')
-        send({ type: 'status', payload: 'status.started' })
+        send({ type: 'status', payload: 'status.error  - ' + args.toString()  })
     })
     
-    zmm.on('status.stopped', () => {
+    zmm.on('status.started', (...args) => {
+        // console.log('status.started')
+        send({ type: 'status', payload: 'status.started  - ' + args.toString()  })
+    })
+    
+    zmm.on('status.stopped', (...args) => {
         // console.log('status.stopped')
-        send({ type: 'status', payload: 'status.stopped' })
+        send({ type: 'status', payload: 'status.stopped  - ' + args.toString() })
     })
     
-    zmm.on('status.stopping', () => {
+    zmm.on('status.stopping', (...args) => {
         // console.log('status.stopping')
-        send({ type: 'status', payload: 'status.stopping' })
+        send({ type: 'status', payload: 'status.stopping  - ' + args.toString()  })
     })
     
     zmm.on('status.retrying', (...args) => {
         // console.log('status.retrying', args)
-        send({ type: 'status', payload: 'status.retrying' })
+        send({ type: 'status', payload: 'status.retrying  - ' + args.toString() })
     })
     
     zmm.on('info', (...args) => {

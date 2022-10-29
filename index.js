@@ -41,7 +41,10 @@ child.on('message', (msg) => {
     // hasMonitor = true; // we actually have an active monitor
     if (msg?.type == 'info') {
         // console.log(...msg.payload)
-        spinner.text = JSON.stringify(...msg.payload)
+        spinner.text = 'info: ' + JSON.stringify(...msg.payload)
+        spinner.info()
+        spinner.text = ''
+        spinner.start()
     }
     if (msg?.type == 'status') {
         // console.log(msg.payload)
@@ -54,14 +57,15 @@ child.on('message', (msg) => {
 
 // controller.abort(); // Stops the child process
 
+var packageId = 0;
 
+var host = '127.0.0.1'
+var MULTICAST_ADDR = '239.255.255.250';
 
-pickPort({ minPort: 6900, maxPort: 6999, ip: '127.0.0.1', type: 'udp'}).then((port) => {
+pickPort({ minPort: 6900, maxPort: 6999, ip: host, type: 'udp'}).then((port) => {
     
-    var host = '127.0.0.1'
     // var PORT = port;
     // var HOST_IP_ADDRESS = host;
-    var MULTICAST_ADDR = '239.255.255.250';
     
     var dgram = require('dgram');
     var server = dgram.createSocket("udp4");
@@ -78,9 +82,28 @@ pickPort({ minPort: 6900, maxPort: 6999, ip: '127.0.0.1', type: 'udp'}).then((po
 		spinner.start()
         
         monitor.on('playerstate', (playerState) => {
-            multicast(JSON.stringify({ ...playerState, source: 'zwift-memory-monitor' }))
+            multicast(JSON.stringify({ ...playerState, packetInfo: { source: 'zmm', seqNo: ++packageId } }))
             
-            // {"id":46976,"worldTime":"162155205099","distance":30137,"roadTime":22838,"laps":1,"speed":20874566,"roadPosition":9704442,"cadenceUHz":964878,"heartrate":154,"power":29,"heading":"1519842","lean":1003085,"climbing":245,"time":3609,"f19":486998039,"f20":33561103,"progress":65280,"customisationId":"162150800509","justWatching":0,"calories":183823,"x":390697.34375,"altitude":9905.400390625,"y":103653.7578125,"watchingRiderId":46976,"groupId":0,"sport":"0","f34":3389112.75}
+            // {
+            //     player: 46976,
+            //     distance: 30137 + packageId,
+            //     speed: 20874566,
+            //     cadence: cadence,
+            //     heartrate: 145 + Math.trunc(time) % 5,
+            //     power: power,
+            //     climbing: 245 + Math.trunc(time) % 10,
+            //     time: 1 + Math.trunc(time),
+            //     work: 100000 + (2 * packageId),
+            //     x: x,
+            //     altitude: altitude,
+            //     y: y,
+            //     watching: 46976,
+            //     metadata: {
+            //         source: 'zmm',
+            //         seqNo: packageId
+            //     }
+            // }
+            
         })
         
     });
