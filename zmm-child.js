@@ -3,13 +3,20 @@ const ZwiftMemoryMonitor = require('@zwfthcks/zwift-memory-monitor');
 
 if (process.platform == 'win32') {
 
-    let type = process.argv[2]
+    var argv = require('minimist')(process.argv.slice(2));
 
+    // Expected/allowed switches:
+    // --type=<type>
+    // --verbose
+
+    let type = argv.type
+    let log = (argv.verbose ? console.log : () => { })
+    
     const zmm = new ZwiftMemoryMonitor(
         {
             retry: true,
             keepalive: true,
-            // log: console.log,
+            log: log,
             type: type
         }
     )
@@ -23,27 +30,27 @@ if (process.platform == 'win32') {
     })
     
     zmm.on('status.error', (...args) => {
-        // console.log('status.started')
+        log('status.started')
         send({ type: 'status', payload: 'status.error  - ' + args.toString()  })
     })
     
     zmm.on('status.started', (...args) => {
-        // console.log('status.started')
+        log('status.started')
         send({ type: 'status', payload: 'status.started  - ' + args.toString()  })
     })
     
     zmm.on('status.stopped', (...args) => {
-        // console.log('status.stopped')
+        log('status.stopped')
         send({ type: 'status', payload: 'status.stopped  - ' + args.toString() })
     })
     
     zmm.on('status.stopping', (...args) => {
-        // console.log('status.stopping')
+        log('status.stopping')
         send({ type: 'status', payload: 'status.stopping  - ' + args.toString()  })
     })
     
     zmm.on('status.retrying', (...args) => {
-        // console.log('status.retrying', args)
+        log('status.retrying', args)
         send({ type: 'status', payload: 'status.retrying  - ' + args.toString() })
     })
     
@@ -52,7 +59,7 @@ if (process.platform == 'win32') {
     })
 
     zmm.on('status.loaded', () => {
-        // console.log('status.loaded')
+        log('status.loaded')
         try {
             zmm.start()
             
@@ -61,6 +68,7 @@ if (process.platform == 'win32') {
             
         } catch (e) {
             // console.log('error in zmm.start(): ', zmm.lasterror)
+            log('error in zmm.start(): ', zmm.lasterror)
             send({ type: 'lasterror', payload: 'last error: ' + zmm.lasterror })
         }
     })

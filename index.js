@@ -30,7 +30,7 @@ const { fork } = require('node:child_process');
 const { stringify } = require('querystring');
 const controller = new AbortController();
 const { signal } = controller;
-const child = fork(path.resolve(__dirname, 'zmm-child.js'), ['playerstate'], { signal });
+const child = fork(path.resolve(__dirname, 'zmm-child.js'), ['--type=playerstate'].concat(process.argv), { signal });
 
 child.on('error', (err) => {
     // This will be called with err being an AbortError if the controller aborts
