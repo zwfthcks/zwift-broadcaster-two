@@ -1,6 +1,6 @@
 {
   "name": "zwiftbroadcaster2",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Broadcast Zwift playerstate via UDP",
   "main": "index.js",
   "scripts": {
