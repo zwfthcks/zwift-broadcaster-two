@@ -8,14 +8,17 @@ if (process.platform == 'win32') {
     // Expected/allowed switches:
     // --type=<type>
     // --verbose
+    // --tryonce
 
     let type = argv.type
     let log = (argv.verbose ? console.log : () => { })
+    let retry =  (argv.tryonce ? false : true)
+    let keepalive =  (argv.tryonce ? false : true)
     
     const zmm = new ZwiftMemoryMonitor(
         {
-            retry: true,
-            keepalive: true,
+            retry: retry,
+            keepalive: keepalive,
             log: log,
             type: type
         }

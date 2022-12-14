@@ -19,7 +19,6 @@ console.log( ansiEscapes.clearTerminal + ansiEscapes.cursorTo(0,0))
 console.log(boxen(' Reading Zwift data from memory... ') + ansiEscapes.cursorDown(1))
 
 const ora = require('ora')
-// const ora = (...args) => import('ora').then(({ default: ora }) => ora(...args));
 const spinner = ora({
           text: '',
           indent: 0
@@ -51,74 +50,55 @@ child.on('message', (msg) => {
         spinner.text = msg.payload
     }
     if (msg?.type == 'playerstate') {
-        monitor.emit('playerstate', { ...msg.payload })
+        if (!argv.nobroadcast) {
+            monitor.emit('playerstate', { ...msg.payload })
+        } else {
+            spinner.text = JSON.stringify(msg.payload)
+        }
     }
 })
 
 // controller.abort(); // Stops the child process
+
+
+var argv = require('minimist')(process.argv.slice(2));
 
 var packageId = 0;
 
 var host = '127.0.0.1'
 var MULTICAST_ADDR = '239.255.255.250';
 
-pickPort({ minPort: 6900, maxPort: 6999, ip: host, type: 'udp'}).then((port) => {
-    
-    // var PORT = port;
-    // var HOST_IP_ADDRESS = host;
-    
-    var dgram = require('dgram');
-    var server = dgram.createSocket("udp4");
-    
-    server.bind(port, host, function () {
-        // server.bind(host, function () {
-        // server.bind(SRC_PORT, HOST_IP_ADDRESS, function () {
-        var portFile = path.join(os.tmpdir(), THISBROADCASTER )
-        
-        console.log(ansiEscapes.cursorDown(1) + 'Publishing port in: ' + portFile + ansiEscapes.cursorDown(2))
-        
-        fs.writeFileSync(portFile, `${port}`)
+if (!argv.nobroadcast) {
 
-		spinner.start()
-        
-        monitor.on('playerstate', (playerState) => {
-            multicast(JSON.stringify({ ...playerState, packetInfo: { source: 'zmm', seqNo: ++packageId } }))
-            
-            // {
-            //     player: 46976,
-            //     distance: 30137 + packageId,
-            //     speed: 20874566,
-            //     cadence: cadence,
-            //     heartrate: 145 + Math.trunc(time) % 5,
-            //     power: power,
-            //     climbing: 245 + Math.trunc(time) % 10,
-            //     time: 1 + Math.trunc(time),
-            //     work: 100000 + (2 * packageId),
-            //     x: x,
-            //     altitude: altitude,
-            //     y: y,
-            //     watching: 46976,
-            //     metadata: {
-            //         source: 'zmm',
-            //         seqNo: packageId
-            //     }
-            // }
-            
-        })
-        
-    });
+    pickPort({ minPort: 6900, maxPort: 6999, ip: host, type: 'udp' }).then((port) => {
     
+        var dgram = require('dgram');
+        var server = dgram.createSocket("udp4");
     
-    function multicast(text) {
-        // var message = new Buffer(`Multicast message! From ${server.address().address}:${server.address().port} to ${PORT}: ${text}`);
-        var message = new Buffer.from(text);
-        // server.send(message, 0, message.length, PORT, MULTICAST_ADDR, function () {
-        server.send(message, 0, message.length, port, MULTICAST_ADDR, function () {
-            spinner.text = `Sent ${message}`;
-            // console.log(`Sent ${message}`);
+        server.bind(port, host, function () {
+            var portFile = path.join(os.tmpdir(), THISBROADCASTER)
+        
+            console.log(ansiEscapes.cursorDown(1) + 'Publishing port in: ' + portFile + ansiEscapes.cursorDown(2))
+        
+            fs.writeFileSync(portFile, `${port}`)
+
+            spinner.start()
+        
+            monitor.on('playerstate', (playerState) => {
+                multicast(JSON.stringify({ ...playerState, packetInfo: { source: 'zmm', seqNo: ++packageId } }))
+            })
+        
         });
-    }
     
     
-});
+        function multicast(text) {
+            var message = new Buffer.from(text);
+            server.send(message, 0, message.length, port, MULTICAST_ADDR, function () {
+                spinner.text = `Sent ${message}`;
+                // console.log(`Sent ${message}`);
+            });
+        }
+       
+    });
 
+}
