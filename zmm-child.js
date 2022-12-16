@@ -76,8 +76,9 @@ if (process.platform == 'win32') {
         }
     })
     
-    
-    zmm.loadURL(`https://zwfthcks.github.io/data/lookup-${type}.json`)
+    zmm.once('ready', () => {
+        zmm.loadURL(`https://zwfthcks.github.io/data/lookup-${type}.json`)
+    })
     
 
 }    
