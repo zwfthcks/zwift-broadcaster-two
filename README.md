@@ -30,3 +30,8 @@ Can be packaged into a standalone executable with
 ```
 npm run pkg
 ```
+
+
+## Example
+
+client.js is a simple client processing the broadcasted packages.
