@@ -42,3 +42,9 @@ client.js is a simple client processing the broadcasted packages.
 # License
 
 MIT
+
+# Repository
+
+https://github.com/zwfthcks/zwift-broadcaster-two
+
+Owner/maintainer: Jesper Rosenlund Nielsen ( jeroni7100 / @zwfthcks )
