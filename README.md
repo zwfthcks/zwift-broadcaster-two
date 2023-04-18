@@ -47,4 +47,4 @@ MIT
 
 https://github.com/zwfthcks/zwift-broadcaster-two
 
-Owner/maintainer: Jesper Rosenlund Nielsen ( jeroni7100 / @zwfthcks )
+Owner/maintainer: Jesper Rosenlund Nielsen ( @jeroni7100 / @zwfthcks/jeroni7100 )
