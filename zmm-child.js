@@ -77,7 +77,8 @@ if (process.platform == 'win32') {
     })
     
     zmm.once('ready', () => {
-        zmm.loadURL(`https://zwfthcks.github.io/data/lookup-${type}.json`)
+        console.log(`https://cdn.jsdelivr.net/gh/zwfthcks/zwift-memory-monitor@latest/build/data/lookup-${type}.json`)
+        zmm.loadURL(`https://cdn.jsdelivr.net/gh/zwfthcks/zwift-memory-monitor@latest/build/data/lookup-${type}.json`)
     })
     
 
