@@ -1,20 +1,25 @@
 const process = require('node:process')
 const ZwiftMemoryMonitor = require('@zwfthcks/zwift-memory-monitor');
+// const { playerstate } = require('@zwfthcks/zwift-memory-monitor/src/lookup');
 
 if (process.platform == 'win32') {
 
     var argv = require('minimist')(process.argv.slice(2));
 
     // Expected/allowed switches:
-    // --type=<type>
+    // --type=<type>  // playerstateHeuristic, playerstate, playerprofile
     // --verbose
     // --tryonce
 
-    let type = argv.type
+    let type = argv.type ?? 'playerstate'
     let log = (argv.verbose ? console.log : () => { })
     let retry =  (argv.tryonce ? false : true)
     let keepalive =  (argv.tryonce ? false : true)
     
+    console.log('type:', type)
+    let lookupUrlType = (type == 'playerstate' ? 'playerstateHeuristic' : type)
+    let lookupUrl = `https://cdn.jsdelivr.net/gh/zwfthcks/zwift-memory-monitor@latest/build/data/lookup-${lookupUrlType}.json`
+
     const zmm = new ZwiftMemoryMonitor(
         {
             retry: retry,
@@ -77,8 +82,8 @@ if (process.platform == 'win32') {
     })
     
     zmm.once('ready', () => {
-        console.log(`https://cdn.jsdelivr.net/gh/zwfthcks/zwift-memory-monitor@latest/build/data/lookup-${type}.json`)
-        zmm.loadURL(`https://cdn.jsdelivr.net/gh/zwfthcks/zwift-memory-monitor@latest/build/data/lookup-${type}.json`)
+        console.log(lookupUrl)
+        zmm.loadURL(lookupUrl)
     })
     
 
