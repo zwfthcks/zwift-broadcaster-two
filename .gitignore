@@ -1,2 +1,4 @@
 /build
 /node_modules
+/run-signtool.cmd
+/run-signtool-here.cmd
